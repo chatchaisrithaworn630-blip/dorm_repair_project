@@ -1,0 +1,41 @@
+```html
+{{define "content"}}
+<section class="panel" style="max-width:760px;margin:0 auto">
+    <h1>{{if .Request.ID}}แก้ไขคำร้อง{{else}}แจ้งซ่อมรายการใหม่{{end}}</h1>
+
+    {{if .Error}}
+    <div class="alert error">{{.Error}}</div>
+    {{end}}
+
+    <form method="post" action="{{if .Request.ID}}/requests/edit?id={{.Request.ID}}{{else}}/requests/new{{end}}">
+        <input type="hidden" name="csrf" value="{{.CSRF}}">
+
+        <label for="room">หมายเลขห้อง</label>
+        <input id="room" name="room" maxlength="20"
+               value="{{.Request.Room}}" required>
+
+        <label for="category">ประเภทปัญหา</label>
+        <select id="category" name="category" required>
+            <option value="">-- เลือกประเภท --</option>
+            <option value="ไฟฟ้า" {{if eq .Request.Category "ไฟฟ้า"}}selected{{end}}>ไฟฟ้า</option>
+            <option value="ประปา" {{if eq .Request.Category "ประปา"}}selected{{end}}>ประปา</option>
+            <option value="เครื่องปรับอากาศ" {{if eq .Request.Category "เครื่องปรับอากาศ"}}selected{{end}}>เครื่องปรับอากาศ</option>
+            <option value="อุปกรณ์ห้องพัก" {{if eq .Request.Category "อุปกรณ์ห้องพัก"}}selected{{end}}>อุปกรณ์ห้องพัก</option>
+            <option value="อื่นๆ" {{if eq .Request.Category "อื่นๆ"}}selected{{end}}>อื่นๆ</option>
+        </select>
+
+        <label for="title">หัวข้อปัญหา</label>
+        <input id="title" name="title" minlength="3" maxlength="120"
+               value="{{.Request.Title}}" required>
+
+        <label for="description">รายละเอียด</label>
+        <textarea id="description" name="description"
+                  minlength="5" maxlength="2000"
+                  required>{{.Request.Description}}</textarea>
+
+        <button type="submit">บันทึกคำร้อง</button>
+        <a class="button secondary" href="/requests">ยกเลิก</a>
+    </form>
+</section>
+{{end}}
+```

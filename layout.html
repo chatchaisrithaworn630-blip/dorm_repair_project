@@ -1,0 +1,336 @@
+
+{{define "layout"}}
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{.Title}} | ระบบแจ้งซ่อมหอพัก</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Tahoma, sans-serif;
+            background: #f4f7fb;
+            color: #263449;
+        }
+
+        .topbar {
+            height: 70px;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 6%;
+            border-bottom: 1px solid #e5eaf1;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 19px;
+            font-weight: 700;
+            color: #2459c4;
+            text-decoration: none;
+        }
+
+        .brand-icon {
+            width: 42px;
+            height: 42px;
+            background: #e8efff;
+            border-radius: 12px;
+            display: grid;
+            place-items: center;
+            font-size: 23px;
+        }
+
+        .nav {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav a {
+            color: #526176;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .nav a:hover {
+            color: #2459c4;
+        }
+
+        .logout {
+            background: #eef3ff;
+            border: 0;
+            border-radius: 8px;
+            padding: 10px 14px;
+            color: #2459c4;
+            cursor: pointer;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1120px;
+            margin: 36px auto;
+            min-height: 65vh;
+        }
+
+        .page-heading {
+            margin-bottom: 25px;
+        }
+
+        .page-heading h1 {
+            font-size: 28px;
+            margin: 0 0 8px;
+        }
+
+        .page-heading p {
+            color: #758196;
+            margin: 0;
+        }
+
+        .panel {
+            background: white;
+            border: 1px solid #e6ebf2;
+            border-radius: 16px;
+            padding: 28px;
+            box-shadow: 0 5px 20px rgba(32, 55, 90, 0.04);
+        }
+
+        .login-panel {
+            max-width: 480px;
+            margin: 45px auto;
+        }
+
+        .login-icon {
+            width: 58px;
+            height: 58px;
+            background: #e8efff;
+            border-radius: 16px;
+            display: grid;
+            place-items: center;
+            font-size: 30px;
+            margin-bottom: 20px;
+        }
+
+        h1, h2, h3 {
+            color: #24334a;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            margin: 16px 0 8px;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #dce3ed;
+            border-radius: 9px;
+            font: inherit;
+            background: white;
+            outline: none;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            border-color: #4779e6;
+            box-shadow: 0 0 0 3px #4779e61c;
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        button, .button {
+            display: inline-block;
+            border: 0;
+            border-radius: 9px;
+            padding: 12px 18px;
+            background: #3268d5;
+            color: white;
+            font: inherit;
+            text-decoration: none;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        button:hover, .button:hover {
+            background: #2454b8;
+        }
+
+        .full-button {
+            width: 100%;
+            margin-top: 22px;
+        }
+
+        .muted {
+            color: #758196;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .alert {
+            padding: 13px 16px;
+            border-radius: 10px;
+            margin-bottom: 18px;
+            font-size: 14px;
+        }
+
+        .alert-error {
+            color: #a52727;
+            background: #fff0f0;
+            border: 1px solid #ffd5d5;
+        }
+
+        .alert-success {
+            color: #176b42;
+            background: #eafaf1;
+            border: 1px solid #c9f0d9;
+        }
+
+        .form-footer {
+            text-align: center;
+            margin-top: 22px;
+            font-size: 14px;
+            color: #758196;
+        }
+
+        a {
+            color: #3268d5;
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        th, td {
+            padding: 15px 12px;
+            border-bottom: 1px solid #edf0f5;
+            text-align: left;
+            font-size: 14px;
+            vertical-align: top;
+        }
+
+        th {
+            background: #f8faff;
+            color: #5d6a7f;
+            font-weight: 600;
+        }
+
+        .status {
+            display: inline-block;
+            border-radius: 20px;
+            padding: 5px 10px;
+            background: #fff4d7;
+            color: #936500;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        .status-working {
+            background: #e8f1ff;
+            color: #2459c4;
+        }
+
+        .status-done {
+            background: #e4f8ec;
+            color: #187344;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 25px;
+            color: #8792a3;
+            font-size: 13px;
+            border-top: 1px solid #e6ebf2;
+            background: white;
+        }
+
+        @media (max-width: 650px) {
+            .topbar {
+                height: auto;
+                padding: 15px 5%;
+                align-items: flex-start;
+                gap: 14px;
+                flex-direction: column;
+            }
+
+            .nav {
+                flex-wrap: wrap;
+                gap: 12px;
+            }
+
+            .container {
+                width: 92%;
+                margin: 24px auto;
+            }
+
+            .panel {
+                padding: 20px;
+            }
+
+            .page-heading h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="topbar">
+        <a class="brand" href="/">
+            <span class="brand-icon">🔧</span>
+            <span>DormCare <small style="display:block;font-size:11px;color:#8792a3;font-weight:400">ระบบจัดการแจ้งซ่อมหอพัก</small></span>
+        </a>
+
+        <nav class="nav">
+            {{if .User}}
+                {{if eq .User.Role "admin"}}
+                    <a href="/admin">จัดการงานซ่อม</a>
+                {{else}}
+                    <a href="/requests">รายการแจ้งซ่อม</a>
+                    <a href="/requests/new">แจ้งซ่อมใหม่</a>
+                {{end}}
+
+                <span class="muted">{{.User.Name}}</span>
+                <form action="/logout" method="POST" style="margin:0">
+                    <button class="logout" type="submit">ออกจากระบบ</button>
+                </form>
+            {{else}}
+                <a href="/login">เข้าสู่ระบบ</a>
+                <a href="/register">สมัครสมาชิก</a>
+            {{end}}
+        </nav>
+    </header>
+
+    <main class="container">
+        {{if .Error}}
+            <div class="alert alert-error">{{.Error}}</div>
+        {{end}}
+
+        {{if .Message}}
+            <div class="alert alert-success">{{.Message}}</div>
+        {{end}}
+
+        {{template "content" .}}
+    </main>
+
+    <footer class="footer">
+        DormCare · ระบบแจ้งซ่อมและจัดการหอพักออนไลน์
+    </footer>
+</body>
+</html>
+{{end}}

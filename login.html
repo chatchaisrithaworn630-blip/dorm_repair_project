@@ -1,0 +1,42 @@
+{{define "content"}}
+<div class="panel login-panel">
+    <h1>เข้าสู่ระบบ</h1>
+
+    {{if .Message}}
+    <div class="alert">{{.Message}}</div>
+    {{end}}
+
+    {{if .Success}}
+    <div class="alert success">{{.Success}}</div>
+    {{end}}
+
+    {{if .Error}}
+    <div class="alert error">{{.Error}}</div>
+    {{end}}
+
+    <form action="/login" method="POST">
+        <label for="email">อีเมล</label>
+        <input
+            id="email"
+            name="email"
+            type="email"
+            required
+        >
+
+        <label for="password">รหัสผ่าน</label>
+        <input
+            id="password"
+            name="password"
+            type="password"
+            required
+        >
+
+        <button type="submit">เข้าสู่ระบบ</button>
+    </form>
+
+    <p>
+        ยังไม่มีบัญชี?
+        <a href="/register">สมัครสมาชิก</a>
+    </p>
+</div>
+{{end}}

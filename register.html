@@ -1,0 +1,42 @@
+```html
+{{define "content"}}
+<section class="panel" style="max-width:520px;margin:0 auto">
+    <h1>สมัครสมาชิก</h1>
+    <p class="muted">สร้างบัญชีสำหรับแจ้งซ่อมหอพัก</p>
+
+    {{if .Message}}
+    <div class="alert">{{.Message}}</div>
+    {{end}}
+
+    {{if .Success}}
+    <div class="alert success">{{.Success}}</div>
+    {{end}}
+
+    {{if .Error}}
+    <div class="alert error">{{.Error}}</div>
+    {{end}}
+
+    <form method="post" action="/register">
+        <label for="name">ชื่อที่แสดง</label>
+        <input id="name" name="name" maxlength="80" required>
+
+        <label for="email">อีเมล</label>
+        <input id="email" name="email" type="email"
+               maxlength="254" required>
+
+        <label for="password">รหัสผ่าน (อย่างน้อย 10 ตัวอักษร)</label>
+        <input id="password" name="password" type="password"
+               minlength="10" maxlength="72"
+               autocomplete="new-password" required>
+
+        <p class="muted">
+            บัญชีที่สมัครจากหน้านี้จะเป็นบทบาท user เท่านั้น
+        </p>
+
+        <button type="submit">สมัครสมาชิก</button>
+    </form>
+
+    <p>มีบัญชีแล้ว? <a href="/login">เข้าสู่ระบบ</a></p>
+</section>
+{{end}}
+```

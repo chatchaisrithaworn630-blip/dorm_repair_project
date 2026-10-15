@@ -1,0 +1,59 @@
+```html
+{{define "content"}}
+<section class="panel">
+    <h1>รายการแจ้งซ่อมของฉัน</h1>
+    <p>สวัสดี {{.User.Name}} — คุณสามารถติดตามสถานะคำร้องของตัวเองได้ที่นี่</p>
+    <a class="button" href="/requests/new">+ แจ้งซ่อมรายการใหม่</a>
+</section>
+
+<section class="panel">
+    {{if .Requests}}
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>ห้อง</th>
+                    <th>หัวข้อ</th>
+                    <th>ประเภท</th>
+                    <th>สถานะ</th>
+                    <th>วันที่</th>
+                    <th>จัดการ</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{range .Requests}}
+                <tr>
+                    <td>{{.Room}}</td>
+                    <td>
+                        <strong>{{.Title}}</strong><br>
+                        <span class="muted">{{.Description}}</span>
+                    </td>
+                    <td>{{.Category}}</td>
+                    <td>{{.Status}}</td>
+                    <td>{{.CreatedAt}}</td>
+                    <td>
+                        {{if eq .Status "รอดำเนินการ"}}
+                        <a class="button secondary" href="/requests/edit?id={{.ID}}">แก้ไข</a>
+
+                        <form class="inline" method="post"
+                              action="/requests/delete"
+                              onsubmit="return confirm('ยืนยันการลบคำร้องนี้?')">
+                            <input type="hidden" name="csrf" value="{{$.CSRF}}">
+                            <input type="hidden" name="id" value="{{.ID}}">
+                            <button class="danger" type="submit">ลบ</button>
+                        </form>
+                        {{else}}
+                        <span class="muted">แก้ไข/ลบไม่ได้</span>
+                        {{end}}
+                    </td>
+                </tr>
+                {{end}}
+            </tbody>
+        </table>
+    </div>
+    {{else}}
+    <p>ยังไม่มีคำร้องแจ้งซ่อม กด “แจ้งซ่อมรายการใหม่” เพื่อเริ่มต้น</p>
+    {{end}}
+</section>
+{{end}}
+```

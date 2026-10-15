@@ -1,0 +1,208 @@
+
+{{define "content"}}
+<h1>จัดการรายการแจ้งซ่อม</h1>
+
+<style>
+    .stats-container {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(150px, 1fr));
+        gap: 15px;
+        margin: 20px 0 25px;
+    }
+
+    .stat-card {
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        border-top: 4px solid #4A0066;
+    }
+
+    .stat-card.pending {
+        border-top-color: #E5A000;
+    }
+
+    .stat-card.progress {
+        border-top-color: #2878D0;
+    }
+
+    .stat-card.completed {
+        border-top-color: #24965B;
+    }
+
+    .stat-title {
+        color: #666;
+        font-size: 14px;
+        margin-bottom: 10px;
+    }
+
+    .stat-number {
+        font-size: 30px;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .table-container {
+        overflow-x: auto;
+    }
+
+    .repair-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+        background: white;
+    }
+
+    .repair-table th,
+    .repair-table td {
+        border: 1px solid #ddd;
+        padding: 10px;
+        text-align: left;
+    }
+
+    .repair-table th {
+        background: #4A0066;
+        color: white;
+    }
+
+    .repair-table select {
+        padding: 7px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        margin-bottom: 8px;
+    }
+
+    .repair-table button {
+        background: #4A0066;
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .repair-table button:hover {
+        background: #6A2385;
+    }
+
+    .status {
+        display: inline-block;
+        padding: 5px 9px;
+        border-radius: 15px;
+        font-size: 12px;
+        white-space: nowrap;
+    }
+
+    .status-pending {
+        background: #FFF1CC;
+        color: #8A5A00;
+    }
+
+    .status-progress {
+        background: #DCEBFF;
+        color: #1459A6;
+    }
+
+    .status-completed {
+        background: #DDF5E6;
+        color: #167344;
+    }
+
+    @media (max-width: 700px) {
+        .stats-container {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+</style>
+
+<!-- แถบสรุปจำนวนงาน -->
+<div class="stats-container">
+    <div class="stat-card">
+        <div class="stat-title">รายการแจ้งซ่อมทั้งหมด</div>
+        <div class="stat-number">{{len .Requests}}</div>
+    </div>
+
+    <div class="stat-card pending">
+        <div class="stat-title">รอดำเนินการ</div>
+        <div class="stat-number">{{index .Stats "รอดำเนินการ"}}</div>
+    </div>
+
+    <div class="stat-card progress">
+    <div class="stat-title">กำลังดำเนินการ</div>
+    <div class="stat-number">{{index .Stats "กำลังดำเนินการ"}}</div>
+</div>
+
+    <div class="stat-card completed">
+        <div class="stat-title">ซ่อมเสร็จแล้ว</div>
+        <div class="stat-number">{{index .Stats "ซ่อมเสร็จ"}}</div>
+    </div>
+</div>
+
+<h2>รายการแจ้งซ่อมของลูกหอ</h2>
+
+{{if .Requests}}
+<div class="table-container">
+    <table class="repair-table">
+        <thead>
+            <tr>
+                <th>ชื่อลูกหอ</th>
+                <th>ห้อง</th>
+                <th>หัวข้อ</th>
+                <th>รายละเอียด</th>
+                <th>สถานะปัจจุบัน</th>
+                <th>จัดการสถานะ</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {{range .Requests}}
+            <tr>
+                <td>{{.OwnerName}}</td>
+                <td>{{.Room}}</td>
+                <td>{{.Title}}</td>
+                <td>{{.Description}}</td>
+                <td>
+                    {{if eq .Status "รอดำเนินการ"}}
+                    <span class="status status-pending">{{.Status}}</span>
+                    {{else if eq .Status "กำลังซ่อม"}}
+                    <span class="status status-progress">{{.Status}}</span>
+                    {{else if eq .Status "ซ่อมเสร็จ"}}
+                    <span class="status status-completed">{{.Status}}</span>
+                    {{else}}
+                    {{.Status}}
+                    {{end}}
+                </td>
+                <td>
+                    <form method="POST" action="/admin/status">
+                        <input type="hidden" name="csrf" value="{{$.CSRF}}">
+                        <input type="hidden" name="id" value="{{.ID}}">
+
+                        <select name="status" required>
+                            <option value="รอดำเนินการ"
+                                {{if eq .Status "รอดำเนินการ"}}selected{{end}}>
+                                รอดำเนินการ
+                            </option>
+                           <option value="กำลังดำเนินการ"
+                            {{if eq .Status "กำลังดำเนินการ"}}selected{{end}}>
+                            กำลังดำเนินการ
+                            </option>
+                            <option value="ซ่อมเสร็จ"
+                                {{if eq .Status "ซ่อมเสร็จ"}}selected{{end}}>
+                                ซ่อมเสร็จ
+                            </option>
+                        </select>
+
+                        <br>
+                        <button type="submit">บันทึกสถานะ</button>
+                    </form>
+                </td>
+            </tr>
+            {{end}}
+        </tbody>
+    </table>
+</div>
+{{else}}
+<p>ยังไม่มีรายการแจ้งซ่อม</p>
+{{end}}
+
+{{end}}
