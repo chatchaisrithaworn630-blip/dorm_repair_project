@@ -264,9 +264,15 @@ func migrateRepairStatus(db *sql.DB) error {
 
 // สร้าง Admin ใหม่ หรืออัปเดตรหัสผ่าน Admin ที่มีอยู่แล้ว
 func (a *App) createInitialAdmin() error {
-	email := "admin@example.com"
-	password := "Admin@123456"
+	email := os.Getenv("ADMIN_EMAIL")
+	if email == "" {
+		email = "admin@example.com"
+	}
 
+	password := os.Getenv("ADMIN_PASSWORD")
+	if password == "" {
+		return fmt.Errorf("ADMIN_PASSWORD is not set")
+	}
 	hash, err := bcrypt.GenerateFromPassword(
 		[]byte(password),
 		bcrypt.DefaultCost,
