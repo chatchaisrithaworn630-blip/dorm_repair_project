@@ -124,8 +124,16 @@ func main() {
 		IdleTimeout:       60 * time.Second,
 	}
 
-	log.Printf("Dorm Repair started at http://localhost:%s", port)
+	port = os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+
+	server.Addr = "0.0.0.0:" + port
+
+	log.Printf("Dorm Repair started on port %s", port)
 	log.Fatal(server.ListenAndServe())
+
 }
 
 func initDB(db *sql.DB) error {
